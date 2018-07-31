@@ -31,7 +31,8 @@ ggplot(datos, aes(Precipitacion, rf )) +
   scale_y_continuous(breaks = seq(0, 150, by = 20))
 
 
-
+ggsave('Gráficos/LE_rfuncionales.png', 
+       width = 24, height = 18, units = "cm", dpi=320)
 
 
 
@@ -41,6 +42,8 @@ summary(modA)
 modS<-glm(rf~Precipitacion+Suelo,family = poisson(), data=datos )
 summary(modS)
 
+
+summary(glm.nb(rf~Precipitacion+Suelo, data=datos))
 
 with(datos, tapply(rf, Suelo, function(x) {
   sprintf("M (SD) = %1.2f (%1.2f)", mean(x), sd(x))
@@ -61,7 +64,8 @@ ggplot(datos, aes(Precipitacion, rnf )) +
   scale_y_continuous(breaks = seq(0, 150, by = 20))
 
 
-
+ggsave('Gráficos/LE_rNOfuncionales.png', 
+       width = 24, height = 18, units = "cm", dpi=320)
 
 
 
@@ -86,6 +90,9 @@ ggplot(datos, aes(Precipitacion, neecrosisp )) +
         axis.text = element_text(size=14)) + 
   scale_x_continuous(breaks = seq(0, 260, by = 50)) 
 
+
+ggsave('Gráficos/LE_rnecrosadas.png', 
+       width = 24, height = 18, units = "cm", dpi=320)
 
 
 modNeA<-glm((neecrosisp)~Precipitacion, data=subset(datos, Suelo=='A'),family = poisson() )
@@ -128,6 +135,10 @@ ggplot(datos, aes(Precipitacion, Radophulus )) +
   scale_x_continuous(breaks = seq(0, 260, by = 50)) 
 
 
+
+ggsave('Gráficos/LE_Rad.png', 
+       width = 24, height = 18, units = "cm", dpi=320)
+
 modRadA<-glm((Radophulus)~Precipitacion, data=subset(datos, Suelo=='A'),family = poisson() )
 summary(modRadA)
 summary(m4 <- glm.nb(Radophulus + 1 ~ Precipitacion, 
@@ -168,6 +179,12 @@ ggplot(datos, aes(Precipitacion, Helicoty )) +
   scale_x_continuous(breaks = seq(0, 260, by = 50)) 
 
 
+
+ggsave('Gráficos/LE_Helicot.png', 
+       width = 24, height = 18, units = "cm", dpi=320)
+
+
+
     modHeA<-glm((Helicoty)~Precipitacion, data=subset(datos, Suelo=='A'),family = poisson() )
     summary(modHeA)
     
@@ -196,7 +213,8 @@ ggplot(datos, aes(Precipitacion, Meloidogy )) +
   scale_x_continuous(breaks = seq(0, 260, by = 50)) 
 
 
-    
+    ggsave('Gráficos/LE_Meloydo.png', 
+           width = 24, height = 18, units = "cm", dpi=320)
 
 
 ########## Total FIto ############### 
@@ -210,7 +228,8 @@ ggplot(datos, aes(Precipitacion, Total_Fito )) +
         axis.text = element_text(size=14)) + 
   scale_x_continuous(breaks = seq(0, 260, by = 50)) 
 
-
+    ggsave('Gráficos/LE_total.png', 
+           width = 24, height = 18, units = "cm", dpi=320)
 
     
     modFTA<-glm((Total_Fito)~Precipitacion, data=subset(datos, Suelo=='A'),family = poisson() )
