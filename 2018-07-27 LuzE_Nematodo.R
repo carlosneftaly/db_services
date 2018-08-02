@@ -30,7 +30,7 @@ dat_texto <- data.frame(
 p1<-ggplot(datos, aes(Precipitacion, rf )) + 
   geom_point() + facet_grid(~Suelo) +
   geom_smooth(method = 'glm') + theme_bw() + 
-  labs(x='Precipicitación (mm)', y='Número de raíces funcionales') + 
+  labs(x='Precipicitación (mm)', y='Número de raíces funcionales/100 g ') + 
   theme(axis.title = element_text(size=16),
         strip.text =element_text(size=16),
         axis.text = element_text(size=14)) + 
@@ -79,8 +79,8 @@ with(datos, tapply(rf, Suelo, function(x) {
 #### Raíces no funcionales 
 
 
-ggplot(datos, aes(Precipitacion, rnf )) + 
-  geom_point() + facet_grid(~Suelo) +
+pn<-ggplot(datos, aes(Precipitacion, rnf )) + 
+  geom_point(alpha=0.9) + facet_grid(~Suelo) +
   geom_smooth(method = 'glm') + theme_bw() + 
   labs(x='Precipicitación (mm)', y='Número de raíces NO funcionales') + 
   theme(axis.title = element_text(size=16),
@@ -89,7 +89,9 @@ ggplot(datos, aes(Precipitacion, rnf )) +
   scale_x_continuous(breaks = seq(0, 260, by = 50)) + 
   scale_y_continuous(breaks = seq(0, 150, by = 20))
 
-
+pn +  geom_text(data=data.frame(y=70, x=200, label=c("P<0.001", "P=0.02", "P=0.03", "P<0.001"), 
+                                Suelo=c("A","B","C","D")), 
+                aes(x,y,label=label), inherit.aes=FALSE)
 ggsave('Gráficos/LE_rNOfuncionales.png', 
        width = 24, height = 18, units = "cm", dpi=320)
 
@@ -113,7 +115,7 @@ dat_texto2 <- data.frame(
 p2<-ggplot(datos, aes(Precipitacion, neecrosisp )) + 
   geom_point() + facet_grid(~Suelo) +
   geom_smooth(method = 'glm') + theme_bw() + 
-  labs(x='Precipicitación (mm)', y='Raíces Necrosadas') + 
+  labs(x='Precipicitación (mm)', y='Raíces necrosadas/100 g') + 
   theme(axis.title = element_text(size=16),
         strip.text =element_text(size=16),
         axis.text = element_text(size=14)) + 
@@ -205,15 +207,15 @@ summary(m1 <- glm.nb(Radophulus ~ Precipitacion,
 
 
 
-p4<-ggplot(datos, aes(Radophulus,neecrosisp )) + 
+p4<-ggplot(datos, aes(Radophulus/1000,neecrosisp )) + 
   geom_point() + facet_grid(~Suelo, scale='free_x') +
   geom_smooth(method = 'glm') + theme_bw() + 
-  labs(y='Número de raíces necrosadas', x=expression(paste(italic('R. similis')))) + 
+  labs(y='Número de raíces necrosadas', x=expression(paste(italic('R. similis '), ~x~10^3, '/100 g'))) + 
   theme(axis.title = element_text(size=16),
         strip.text =element_text(size=16),
         axis.text = element_text(size=14)) 
 
-p4 + geom_text(data=data.frame(y=70, x=40000, label=c("P<0.001", "P<0.001", "P<0.001", "P<0.001"), 
+p4 + geom_text(data=data.frame(y=70, x=40000/1000, label=c("P<0.001", "P<0.001", "P<0.001", "P<0.001"), 
                                Suelo=c("A","B","C","D")), 
                aes(x,y,label=label), inherit.aes=FALSE)
 ggsave('Gráficos/LE_RadxNecrosis.png', 
@@ -272,14 +274,18 @@ ggplot(datos, aes(Precipitacion, Meloidogy )) +
 
 ########## Total FIto ############### 
 
-ggplot(datos, aes(Precipitacion, Total_Fito )) + 
+p5<-ggplot(datos, aes(Precipitacion, Total_Fito/1000)) + 
   geom_point() + facet_grid(~Suelo) +
   geom_smooth(method = 'glm') + theme_bw() + 
-  labs(x='Precipicitación (mm)', y='Número total de nemátodos') + 
+  labs(x='Precipicitación (mm)', y=expression(paste('Número de nematodos  ', ~x~10^3, '/100 g'))) + 
   theme(axis.title = element_text(size=16),
         strip.text =element_text(size=16),
         axis.text = element_text(size=14)) + 
   scale_x_continuous(breaks = seq(0, 260, by = 50)) 
+    
+    p5 +  geom_text(data=data.frame(y=60000/1000, x=200, label=c("P<0.001", "P<0.001", "P<0.001", "P<0.001"), 
+                                    Suelo=c("A","B","C","D")), 
+                    aes(x,y,label=label), inherit.aes=FALSE)
 
     ggsave('Gráficos/LE_total.png', 
            width = 24, height = 18, units = "cm", dpi=320)
@@ -311,8 +317,7 @@ ggplot(datos, aes(Precipitacion, Total_Fito )) +
 
 
 
-
-
+##### ENsayos preliminares#######
 
 
 
