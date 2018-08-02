@@ -115,7 +115,7 @@ dat_texto2 <- data.frame(
 p2<-ggplot(datos, aes(Precipitacion, neecrosisp )) + 
   geom_point() + facet_grid(~Suelo) +
   geom_smooth(method = 'glm') + theme_bw() + 
-  labs(x='Precipicitación (mm)', y='Raíces necrosadas/100 g') + 
+  labs(x='Precipicitación (mm)', y='Raíces necrosadas') + 
   theme(axis.title = element_text(size=16),
         strip.text =element_text(size=16),
         axis.text = element_text(size=14)) + 
