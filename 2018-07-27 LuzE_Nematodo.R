@@ -19,8 +19,15 @@ ggplot(datos, aes(Muestreo, rf, size=Precipitacion) ) +
   geom_point() + facet_grid(~Suelo) +
    geom_smooth()
 
+dat_texto <- data.frame(
+  label = c("P<0.001", "P<0.001", "P<0.001", "P<0.001"),
+  suelo   = c('A','B', 'C', 'D')
+)
 
-ggplot(datos, aes(Precipitacion, rf )) + 
+
+
+
+p1<-ggplot(datos, aes(Precipitacion, rf )) + 
   geom_point() + facet_grid(~Suelo) +
   geom_smooth(method = 'glm') + theme_bw() + 
   labs(x='Precipicitación (mm)', y='Número de raíces funcionales') + 
@@ -30,6 +37,13 @@ ggplot(datos, aes(Precipitacion, rf )) +
   scale_x_continuous(breaks = seq(0, 260, by = 50)) + 
   scale_y_continuous(breaks = seq(0, 150, by = 20))
 
+p1 + geom_text(
+  data    = dat_texto,
+  mapping = aes(x = 200, y = 120, label = label), size=5
+  
+)
+
+
 
 ggsave('Gráficos/LE_rfuncionales.png', 
        width = 24, height = 18, units = "cm", dpi=320)
@@ -38,6 +52,18 @@ ggsave('Gráficos/LE_rfuncionales.png',
 
 modA<-glm((rf)~Precipitacion, data=subset(datos, Suelo=='A'),family = poisson() )
 summary(modA)
+
+
+modB<-glm((rf)~Precipitacion, data=subset(datos, Suelo=='B'),family = poisson() )
+summary(modB)
+
+
+modC<-glm((rf)~Precipitacion, data=subset(datos, Suelo=='C'),family = poisson() )
+summary(modC)
+
+
+modD<-glm((rf)~Precipitacion, data=subset(datos, Suelo=='D'),family = poisson() )
+summary(modB)
 
 modS<-glm(rf~Precipitacion+Suelo,family = poisson(), data=datos )
 summary(modS)
@@ -77,11 +103,14 @@ summary(modSn)
 
 
 
-####### NEcrosis 
+####### NEcrosis ##################
 
+dat_texto2 <- data.frame(
+  label = c("P0.01", "P0.05", "P0.05", "P0.001"),
+  suelo   = c('A','B', 'C', 'D')
+)
 
-
-ggplot(datos, aes(Precipitacion, neecrosisp )) + 
+p2<-ggplot(datos, aes(Precipitacion, neecrosisp )) + 
   geom_point() + facet_grid(~Suelo) +
   geom_smooth(method = 'glm') + theme_bw() + 
   labs(x='Precipicitación (mm)', y='Raíces Necrosadas') + 
@@ -90,6 +119,9 @@ ggplot(datos, aes(Precipitacion, neecrosisp )) +
         axis.text = element_text(size=14)) + 
   scale_x_continuous(breaks = seq(0, 260, by = 50)) 
 
+p2+ geom_text(data=data.frame(x=200, y=70, label=c("P=0.035", "P=0.76", "P=0.96", "P=0.011"), 
+                               Suelo=c("A","B","C","D")), 
+               aes(x,y,label=label), inherit.aes=FALSE)
 
 ggsave('Gráficos/LE_rnecrosadas.png', 
        width = 24, height = 18, units = "cm", dpi=320)
@@ -125,23 +157,28 @@ summary(glm.nb(neecrosisp ~ Precipitacion,
 ########## Rad #######
 
 
-ggplot(datos, aes(Precipitacion, Radophulus )) + 
+p3<-ggplot(datos, aes(Precipitacion, Radophulus )) + 
   geom_point() + facet_grid(~Suelo) +
   geom_smooth(method = 'glm') + theme_bw() + 
-  labs(x='Precipicitación (mm)', y='Radophulus similis') + 
+  labs(x='Precipicitación (mm)', y=expression(paste(italic('R. similis')))) + 
   theme(axis.title = element_text(size=16),
         strip.text =element_text(size=16),
         axis.text = element_text(size=14)) + 
   scale_x_continuous(breaks = seq(0, 260, by = 50)) 
 
-
+p3 + geom_text(data=data.frame(x=200, y=74000, label=c("P<0.001", "P=0.056", "P=0.02", "P<0.001"), 
+                               Suelo=c("A","B","C","D")), 
+               aes(x,y,label=label), inherit.aes=FALSE)
 
 ggsave('Gráficos/LE_Rad.png', 
        width = 24, height = 18, units = "cm", dpi=320)
 
 modRadA<-glm((Radophulus)~Precipitacion, data=subset(datos, Suelo=='A'),family = poisson() )
 summary(modRadA)
-summary(m4 <- glm.nb(Radophulus + 1 ~ Precipitacion, 
+
+
+
+summary(m4 <- glm.nb(Radophulus  ~ Precipitacion, 
                      data=subset(datos, Suelo=='A')))
 
 modRadB<-glm((Radophulus)~Precipitacion, data=subset(datos, Suelo=='B'),family = poisson() )
@@ -165,6 +202,22 @@ summary(m1 <- glm.nb(Radophulus ~ Precipitacion,
                      data=subset(datos, Suelo=='D')))
 
 
+
+
+
+p4<-ggplot(datos, aes(Radophulus,neecrosisp )) + 
+  geom_point() + facet_grid(~Suelo, scale='free_x') +
+  geom_smooth(method = 'glm') + theme_bw() + 
+  labs(y='Número de raíces necrosadas', x=expression(paste(italic('R. similis')))) + 
+  theme(axis.title = element_text(size=16),
+        strip.text =element_text(size=16),
+        axis.text = element_text(size=14)) 
+
+p4 + geom_text(data=data.frame(y=70, x=40000, label=c("P<0.001", "P<0.001", "P<0.001", "P<0.001"), 
+                               Suelo=c("A","B","C","D")), 
+               aes(x,y,label=label), inherit.aes=FALSE)
+ggsave('Gráficos/LE_RadxNecrosis.png', 
+       width = 24, height = 18, units = "cm", dpi=320)
 
 
 ########### Helicoty  ############### 
