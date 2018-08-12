@@ -242,4 +242,57 @@ datos<-read.csv('Datos/2018-08-02 DatosAguacate1.csv', sep=';')
             geom_boxplot() + geom_jitter(aes(colour=Tiempo, alpha=0.002)) +
             theme_bw()+ 
             scale_x_discrete(labels = labls)
+  
+### Crecimiento en CMC ################################ 
           
+  datCMC<-read.csv('Datos/CrecimientoCMC.csv', header = T, sep=';')
+    
+    # PDA
+    datPDA<-datCMC %>% filter(Medio=='PDA')       
+    
+    modPDA<-lm(ABC~Cepa+Tiempo, data=datPDA)
+      # Supuestos
+        shapiro.test(modPDA$residuals)
+        plot(modPDA)
+        bartlett.test(ABC~Cepa, data=datPDA)
+        
+        anova(modPDA)    
+        HSD.test(modPDA, 'Cepa', console = T)  
+        
+  # CMC
+        datCMCs<-datCMC %>% filter(Medio=='CMC')       
+        
+        modCMC<-lm(log(ABC)~Cepa+Tiempo, data=datCMCs)
+        # Supuestos
+        shapiro.test(modCMC$residuals)
+        plot(modCMC)
+        bartlett.test(log(ABC)~Cepa, data=datCMCs)
+        
+        anova(modPDA)    
+        HSD.test(modCMC, 'Cepa', console = T)  
+        
+        
+        
+        resCMC<-datCMC %>%
+          group_by( Cepa,Medio) %>%
+            summarise(PrArea=mean(ABC),
+                    sdArea=sd(ABC)) 
+        
+        
+        labls2<-c(
+          expression(paste(italic(T. ~asperellum),~T20)),
+          expression(paste(italic(T. ~asperellum),~T38)),
+          expression(paste(italic(T. ~harzianum),~T35)),
+          expression(paste(italic(T. ~harzianum),~T44)),
+          expression(paste(italic(Trichoderma),~sp.~T261)),
+          expression(paste(italic(Trichoderma),~sp.~T34))
+        )
+        
+        ggplot(resCMC, aes(Cepa, PrArea, fill=Cepa)) +
+          geom_bar(stat='identity') +
+          geom_errorbar(aes(ymax = PrArea + sdArea, ymin=PrArea - sdArea,  width=0.25)) + 
+          scale_fill_jama() + theme_bw() + 
+          labs(x='Cepa' ,y='Área bajo la curva') + 
+          theme(legend.position="none") + 
+          scale_x_discrete(labels = labls2) +facet_grid(~Medio)
+        
